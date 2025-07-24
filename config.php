@@ -1,18 +1,35 @@
 <?php
-// Database configuration
+// Database Configuration
 define('DB_HOST', 'localhost');
-define('DB_USERNAME', 'root');
-define('DB_PASSWORD', '');
-define('DB_NAME', 'shms');
+define('DB_USER', 'root');
+define('DB_PASS', '');
+define('DB_NAME', 'skms_hotel');
 
-// Establish database connection
-try {
-    $pdo = new PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_NAME, DB_USERNAME, DB_PASSWORD);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    die("ERROR: Could not connect. " . $e->getMessage());
+// Base URL
+define('BASE_URL', 'http://localhost/skms/');
+
+// App Name
+define('APP_NAME', 'Skyview Hotel Management System');
+
+// Security Settings
+session_start([
+    'cookie_lifetime' => 86400,
+    'cookie_secure'   => false, // Enable in production with HTTPS
+    'cookie_httponly' => true,
+    'cookie_samesite' => 'Lax'
+]);
+
+// CSRF Protection
+function csrf_token() {
+    if (empty($_SESSION['csrf_token'])) {
+        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+    }
+    return $_SESSION['csrf_token'];
 }
 
-// Set timezone
-date_default_timezone_set('Africa/Nairobi');
+// Redirect function
+function redirect($url) {
+    header("Location: " . BASE_URL . $url);
+    exit();
+}
 ?>
